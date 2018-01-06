@@ -23,9 +23,9 @@ class Movie:
         self.api = API()
 
     def search(self, **kwargs):
-         tmdb_id = self.api.tmdb.search(query = kwargs['query'])
-         imdb_id = self.api.tmdb.get(movie_id = tmdb_id)
-         return imdb_id
+        tmdb_id = self.api.tmdb.search(query = kwargs['query'])
+        imdb_id = self.api.tmdb.get(movie_id = tmdb_id)
+        return imdb_id
 
     def get(self, **kwargs):
         return self.api.douban.imdb(imdb_id = kwargs['imdb_id'])
