@@ -19,11 +19,20 @@ class Douban:
             imdb_id = kwargs['imdb_id'],
             api_key = __key__
         ))
+        if response is None:
+            return None
+
         response = response.json()
+
+        attr = response.get('attrs')
+        if attr is None:
+            return None
+
+        movie_type = attr.get('movie_type')
 
         return {
             'imdb_id': kwargs['imdb_id'],
-            'movie_type': response['attrs']['movie_type'],
+            'movie_type': movie_type,
             'title': {
                 'en': response['title'],
                 'ch': response['alt_title'][:response['alt_title'].find('/') - 1],

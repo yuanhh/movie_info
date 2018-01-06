@@ -16,7 +16,6 @@ class OST:
                     int(e['SubDownloadsCnt']):
                     target = i
 
-        print(target)
         return target
 
     def link(self, **kwargs):
