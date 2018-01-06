@@ -8,11 +8,13 @@ import requests
 
 from utils.api.tmdb import TMDB
 from utils.api.douban import Douban
+from utils.api.gtrend import Gtrend
 
 class API:
     def __init__(self):
         self.tmdb = TMDB()
         self.douban = Douban()
+	self.trend = Gtrend()
 
 class Movie:
     def __init__(self):
@@ -25,6 +27,9 @@ class Movie:
 
     def get(self, **kwargs):
         return self.api.douban.imdb(imdb_id = kwargs['imdb_id'])
+
+    def top(self, **kwargs):
+	return self.api.trend.top(begin = kwargs['begin'], end = kwargs['end'])
 
 # rename
 movie = Movie()
