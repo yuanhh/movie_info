@@ -27,6 +27,6 @@ class Douban:
             'title': {
                 'en': response['title'],
                 'ch': response['alt_title'][:response['alt_title'].find('/') - 1],
-                'hk': response['alt_title'][response['alt_title'].find('/') + 1: -3]
+                'hk': response['alt_title'][response['alt_title'].find('/') + 2: -3]
             }
         }
