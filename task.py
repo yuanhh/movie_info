@@ -3,19 +3,22 @@ import sys
 import json
 import requests
 
-from urllib.request import urlopen, HTTPError, URLError
+from urllib.request import urlretrieve, HTTPError, URLError
 from zipfile import ZipFile
 
 from utils.movie import movie
 
+__path__ = os.path.dirname(os.path.abspath(__file__))
+
 def download_file(url, movieName):
     # Open the url
     try:
-        f = urlopen(url)
+        #f = urlopen(url)
+        f = urlretrieve(url, '{}/data/{}.zip'.format(__path__, movieName))
         #print("downloading ", url)
 
-        with open('{}.zip'.format(movieName), "wb") as df:
-            df.write(f.read())
+        #with open('{}.zip'.format(movieName), "wb") as df:
+        #    df.write(f.read())
 
         return True
 
@@ -33,9 +36,9 @@ def unzip(movieName):
     if movieName in fileList:
         return
 
-    os.mkdir(movieName)
-    with ZipFile('{}.zip'.format(movieName), 'r') as zf:
-        zf.extractall(movieName)
+    os.mkdir('{}/data/{}'.format(__path__, movieName))
+    with ZipFile('{}/data/{}.zip'.format(__path__, movieName), 'r') as zf:
+        zf.extractall('{}/data/{}'.format(__path__, movieName))
 
 def main():
 
