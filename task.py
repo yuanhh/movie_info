@@ -42,15 +42,22 @@ def main():
     mlist.update(movie.top(begin = 201601, end = 201613))
     mlist.update(movie.top(begin = 201701, end = 201712))
 
+    out_f = open('{}/data/{}'.format(__path__, 'movie_info.txt'), 'w')
     for mv in list(mlist):
         m = movie.search(query = mv)
         info = movie.get(imdb_id = m)
-        info['title']['en'] = mv
-        print(json.dumps(info, indent=4))
         l = movie.link(query = mv, sublanid = 'zht', imdbid = m)
+
+        info['title']['en'] = mv
+        info['zipUrl'] = l
+
         if l is not None:
             if download_file(l, mv):
                 unzip(mv)
+
+        out_f.write(json.dumps(info, indent = 4))
+
+    out_f.close()
 
 if __name__ == '__main__':
     main()
