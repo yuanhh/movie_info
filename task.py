@@ -13,13 +13,7 @@ __path__ = os.path.dirname(os.path.abspath(__file__))
 def download_file(url, movieName):
     # Open the url
     try:
-        #f = urlopen(url)
         f = urlretrieve(url, '{}/data/{}.zip'.format(__path__, movieName))
-        #print("downloading ", url)
-
-        #with open('{}.zip'.format(movieName), "wb") as df:
-        #    df.write(f.read())
-
         return True
 
     #handle errors
@@ -47,15 +41,24 @@ def main():
     mlist.update(movie.top(begin = 201601, end = 201613))
     mlist.update(movie.top(begin = 201701, end = 201712))
 
+    tmp = {}
+    
     for mv in list(mlist):
         m = movie.search(query = mv)
+        
         info = movie.get(imdb_id = m)
+        if info is None:
+            continue
         info['title']['en'] = mv
-        print(json.dumps(info, indent=4))
         l = movie.link(query = mv, sublanid = 'zht', imdbid = m)
         if l is not None:
+            info['url'] = l
             if download_file(l, mv):
                 unzip(mv)
+                
+    with open('{}/data/{}'.format(__path__, 'mv_info.json'), 'w') as out_p:
+        json.dump(info, out_p)
 
+        close
 if __name__ == '__main__':
     main()
