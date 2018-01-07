@@ -7,6 +7,7 @@ from urllib.request import urlretrieve, HTTPError, URLError
 from zipfile import ZipFile
 
 from utils.movie import movie
+from utils.subtitle import subtitle
 
 __path__ = os.path.dirname(os.path.abspath(__file__))
 
@@ -14,7 +15,6 @@ def download_file(url, movieName):
     # Open the url
     try:
         f = urlretrieve(url, '{}/data/{}.zip'.format(__path__, movieName))
-        #print("downloading ", url)
         return True
 
     #handle errors
@@ -45,17 +45,21 @@ def main():
     out_f = open('{}/data/{}'.format(__path__, 'movie_info.txt'), 'w')
     for mv in list(mlist):
         m = movie.search(query = mv)
-        info = movie.get(imdb_id = m)
-        l = movie.link(query = mv, sublanid = 'zht', imdbid = m)
+        if m['imdb_id'] is None:
+            continue
 
-        info['title']['en'] = mv
+        info = movie.get(imdb_id = m['imdb_id'])
+        l = subtitle.link(query = mv, sublanid = 'zht', imdbid = m['imdb_id'])
+
+        info['douban']['title']['en'] = mv
         info['zipUrl'] = l
 
-        if l is not None:
-            if download_file(l, mv):
-                unzip(mv)
+        #if l is not None:
+        #    if download_file(l, mv):
+        #        unzip(mv)
 
-        out_f.write(json.dumps(info, indent = 4))
+        str_ = json.dumps(info, indent = 4)
+        out_f.write(str_)
 
     out_f.close()
 

@@ -40,8 +40,6 @@ class TMDB:
 
         response = requests.request('GET', self.url.get.format(movie_id = kwargs['movie_id']), data = payload)
 
-        print(self.url.get.format(movie_id = kwargs['movie_id']))
-
         return response.json()
 
     def find(self, **kwargs):
@@ -56,5 +54,7 @@ class TMDB:
         response = response.json()
 
         result = sorted(response['movie_results'], key = lambda x: x['popularity'], reverse = True)
+        if len(result) == 0:
+            return None
 
         return result[0]

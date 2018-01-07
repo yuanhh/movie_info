@@ -5,7 +5,7 @@ from utils.api.ost import OST
 
 class API:
     def __init__(self):
-        self.api = OST()
+        self.ost = OST()
 
 class Subtitle:
     def __init__(self):

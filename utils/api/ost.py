@@ -22,7 +22,7 @@ class OST:
         token = self.api.login("doctest", 'doctest')
         data = self.api.search_subtitles([{'query':kwargs['query'],
             'sublanguageid':kwargs['sublanid']}])
-        target = self.find_max_dl_count(data, kwargs['imdb_id'])
+        target = self.find_max_dl_count(data = data, imdb_id = kwargs['imdb_id'])
 
         if len(data) == 0:
             return None
