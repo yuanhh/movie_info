@@ -30,6 +30,10 @@ class Movie:
 
     def search(self, **kwargs):
         tmdb = self.api.tmdb.search(query = kwargs['query'])
+
+        if tmdb == None:
+            return None
+
         imdb = self.api.tmdb.get(movie_id = tmdb['id'])
 
         return imdb
