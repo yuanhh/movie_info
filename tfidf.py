@@ -1,66 +1,69 @@
 import os
 import sys
 import math
-import pysrt
 import json
 import io
-import jieba
 
 __path__ = os.path.dirname(os.path.abspath(__file__))
 
 def tfidf(tf, df, docCount):
-    for movie in tf:
-        with open('{}/data/{}/{}'.format(__path__, movie, 'tfidf.txt'),
-                'w') as out_f:
-            for seg in df:
-                val = tf[movie].get(seg)
-                if val is None:
-                    val = 0
-                else:
-                    val = val * math.log2(docCount / df[seg])
-                out_f.write(seg + '\t' + str(val) + '\n')
+    for imdb_id in tf:
+        with open('result/{}.tfidf'.format(imdb_id), 'w') as out_f:
+            for tok in tf[imdb_id]:
+                val = tf[imdb_id][tok] * math.log2(docCount / df[tok])
+                print(tok + '\t' + str(val) + '\n')
+                out_f.write(tok + '\t' + str(val) + '\n')
 
-def termFreq(tf, seg_list, movie):
-    for seg in seg_list:
-        freq = tf[movie].get(seg)
+def termFreq(tf, tokens, imdb_id):
+    if tokens is None:
+        return
+
+    for tok in tokens:
+        freq = tf[imdb_id].get(tok)
         if freq is None:
-            tf[movie][seg] = 1
+            tf[imdb_id][tok] = 1
         else:
-            tf[movie][seg] += 1
+            tf[imdb_id][tok] += 1
 
-def docFreq(tf, df, movie):
-    for seg in tf[movie]:
-        freq = df.get(seg)
+def docFreq(tf, df, imdb_id):
+    for tok in tf[imdb_id]:
+        freq = df.get(tok)
         if freq is None:
-            df[seg] = 1
+            df[tok] = 1
         else:
-            df[seg] += 1
+            df[tok] += 1
 
-def extract_movie_line(movie):
-    contents = os.listdir('{}/data/{}'.format(__path__, movie))
-    for f in contents:
-        if f.endswith('.srt'):
-            try:
-                return pysrt.open('{}/data/{}/{}'.format(__path__, movie, f))
-            except UnicodeDecodeError:
-                continue
+def get_token(subs):
+    if type(subs) is not dict:
+        return None
+
+    tokens = list()
+    for i, sub in enumerate(subs['sentences']):
+        for j, token in enumerate(sub['tokens']):
+            tokens.append(token['word'])
+
+    return tokens
 
 def main():
+    # initialize
     docCount = 0
     df = dict()
     tf = dict()
-    movieList = os.listdir('{}/data/'.format(__path__))
-    for movie in movieList:
-        tf[movie] = dict()
-        subs = extract_movie_line(movie)
-        if subs is None:
-            continue
-        for sub in subs:
-            seg_list = jieba.cut(sub.text)
-            termFreq(tf, seg_list, movie)
+
+    imdb_list = os.listdir('{}/result/'.format(__path__))
+    for imdb_f in imdb_list:
+        imdb_id, ext =  os.path.splitext(imdb_f)
+        tf[imdb_id] = dict()
+
+        with open('result/{}'.format(imdb_f), 'r') as info_p:
+            data = json.load(info_p)
+    
+        for i, subs in enumerate(data['parsed_sub']):
+            tokens = get_token(subs)
+            termFreq(tf, tokens, imdb_id)
 
         docCount = docCount + 1
-        docFreq(tf, df, movie)
+        docFreq(tf, df, imdb_id)
 
     tfidf(tf, df, docCount)
 

@@ -104,4 +104,5 @@ ENV/
 
 # data
 data/*
+result/*
 !data/movie_list.txt
