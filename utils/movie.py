@@ -37,6 +37,7 @@ class Movie:
         result = self.api.youtube.get(id = [x['id']['videoId'] for x in result['items']])
 
         return {
+            'tmdb': self.search(query = kwargs['query'])['popularity'],
             'youtube': max([x['statistics']['viewCount'] for x in result['items']])
         }
 
