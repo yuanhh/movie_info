@@ -7,6 +7,7 @@ import json
 import requests
 
 from utils.api.tmdb import TMDB
+from utils.api.gtrends import Gtrend
 from utils.api.douban import Douban
 from utils.api.youtube import Youtube
 
@@ -15,6 +16,7 @@ class API:
         self.tmdb = TMDB()
         self.douban = Douban()
         self.youtube = Youtube()
+        self.gtrend = Gtrend()
 
 class Movie:
     def __init__(self):
@@ -40,6 +42,9 @@ class Movie:
             'tmdb': self.search(query = kwargs['query'])['popularity'],
             'youtube': max([x['statistics']['viewCount'] for x in result['items']])
         }
+
+    def top(self, **kwargs):
+        return self.api.gtrend.top(begin = kwargs['begin'], end = kwargs['end'])
 
 # rename
 movie = Movie()
