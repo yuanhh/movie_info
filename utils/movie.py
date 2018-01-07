@@ -27,12 +27,19 @@ class Movie:
         }
 
     def search(self, **kwargs):
-        return {
-            'tmdb': self.api.tmdb.search(query = kwargs['query'])
-        }
+        tmdb = self.api.tmdb.search(query = kwargs['query'])
+        imdb = self.api.tmdb.get(movie_id = tmdb['id'])
+
+        return imdb
 
     def trend(self, **kwargs):
-        pass
+        result = self.api.youtube.search(query = kwargs['query'] + ' ' + 'trailer')
+        result = self.api.youtube.get(id = [x['id']['videoId'] for x in result['items']])
+
+        return {
+            'tmdb': self.search(query = kwargs['query'])['popularity'],
+            'youtube': max([x['statistics']['viewCount'] for x in result['items']])
+        }
 
 # rename
 movie = Movie()
