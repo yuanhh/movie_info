@@ -13,13 +13,8 @@ __path__ = os.path.dirname(os.path.abspath(__file__))
 def download_file(url, movieName):
     # Open the url
     try:
-        #f = urlopen(url)
         f = urlretrieve(url, '{}/data/{}.zip'.format(__path__, movieName))
         #print("downloading ", url)
-
-        #with open('{}.zip'.format(movieName), "wb") as df:
-        #    df.write(f.read())
-
         return True
 
     #handle errors
