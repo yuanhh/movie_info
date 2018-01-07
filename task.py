@@ -37,13 +37,10 @@ def unzip(movieName):
 
 def main():
 
-    mlist = set()
-    mlist.update(movie.top(begin = 201501, end = 201513))
-    mlist.update(movie.top(begin = 201601, end = 201613))
-    mlist.update(movie.top(begin = 201701, end = 201712))
+    movieList = getMovieList()
 
     out_f = open('{}/data/{}'.format(__path__, 'movie_info.txt'), 'w')
-    for mv in list(mlist):
+    for mv in list(movieList):
         m = movie.search(query = mv)
         info = movie.get(imdb_id = m)
         l = movie.link(query = mv, sublanid = 'zht', imdbid = m)
@@ -58,6 +55,27 @@ def main():
         out_f.write(json.dumps(info, indent = 4))
 
     out_f.close()
+
+# Step 1:
+#   Get the movie list from file(movie_list.txt)
+#   Download from google trend it file not found
+def getMovieList():
+    movieList = []
+
+    movieListFileName = '{}/data/{}'.format(__path__, 'movie_list.txt')
+    try:
+        with open(movieListFileName, 'r') as f:
+            movieList = json.load(f)
+    except (FileNotFoundError, json.decoder.JSONDecodeError):
+        print("Let's download movie list.".format(movieListFileName))
+        movieList = set()
+        movieList.update(movie.top(begin = 201501, end = 201513))
+        movieList.update(movie.top(begin = 201601, end = 201613))
+        movieList.update(movie.top(begin = 201701, end = 201712))
+        movieList = list(movieList)
+        with open(movieListFileName, 'w+') as f:
+            json.dump(movieList, f)
+    return movieList
 
 if __name__ == '__main__':
     main()
