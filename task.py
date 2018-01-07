@@ -17,16 +17,23 @@ def download_file(url, movieName):
         with open('{}.zip'.format(movieName), "wb") as df:
             df.write(f.read())
 
+        return True
+
     #handle errors
     except HTTPError as err:
         print("HTTP Error:", err.code, url)
+        return False
     except URLError as err:
         print("URL Error:", err.reason, url)
+        return False
 
 def unzip(movieName):
 
-    os.mkdir(movieName)
+    fileList = os.listdir('{}/data'.format(__path__))
+    if movieName in fileList:
+        return
 
+    os.mkdir(movieName)
     with ZipFile('{}.zip'.format(movieName), 'r') as zf:
         zf.extractall(movieName)
 
@@ -39,12 +46,13 @@ def main():
 
     for mv in list(mlist):
         m = movie.search(query = mv)
-        # info = movie.get(imdb_id = m)
-        # print(info)
+        info = movie.get(imdb_id = m)
+        info['title']['en'] = mv
+        print(json.dumps(info, indent=4))
         l = movie.link(query = mv, sublanid = 'zht', imdbid = m)
         if l is not None:
-            download_file(l, mv)
-            unzip(mv)
+            if download_file(l, mv):
+                unzip(mv)
 
 if __name__ == '__main__':
     main()
