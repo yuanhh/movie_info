@@ -33,7 +33,12 @@ class Movie:
         return imdb
 
     def trend(self, **kwargs):
-        pass
+        result = self.api.youtube.search(query = kwargs['query'] + ' ' + 'trailer')
+        result = self.api.youtube.get(id = [x['id']['videoId'] for x in result['items']])
+
+        return {
+            'youtube': max([x['statistics']['viewCount'] for x in result['items']])
+        }
 
 # rename
 movie = Movie()

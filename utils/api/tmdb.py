@@ -53,5 +53,8 @@ class TMDB:
         }
 
         response = requests.request('GET', self.url.find.format(imdb_id = kwargs['imdb_id']), data = payload)
+        response = response.json()
 
-        return response.json()
+        result = sorted(response['movie_results'], key = lambda x: x['popularity'], reverse = True)
+
+        return result[0]
