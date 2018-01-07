@@ -101,3 +101,7 @@ ENV/
 .mypy_cache/
 
 *.swp
+
+# data
+data/*
+!data/movie_list.txt
