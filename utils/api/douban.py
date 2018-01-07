@@ -14,7 +14,7 @@ class Douban:
     def __init__(self):
         self.url = URL()
 
-    def imdb(self, **kwargs):
+    def get(self, **kwargs):
         response = requests.request('GET', self.url.imdb.format(
             imdb_id = kwargs['imdb_id'],
             api_key = __key__

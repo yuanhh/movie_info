@@ -7,12 +7,12 @@ class OST:
     def __init__(self):
         self.api = OpenSubtitles()
 
-    def find_max_dl_count(self, data, imdbid):
+    def find_max_dl_count(self, **kwargs):
         target = 0
-        for i, e in enumerate(data):
-            if int(e['IDMovieImdb']) == int(imdbid.strip('t')) and \
+        for i, e in enumerate(kwargs['data']):
+            if int(e['IDMovieImdb']) == int(kwargs['imdb_id'].strip('t')) and \
                 e['SubFormat'] == 'srt':
-                if int(data[target]['SubDownloadsCnt']) < \
+                if int(kwargs['data'][target]['SubDownloadsCnt']) < \
                     int(e['SubDownloadsCnt']):
                     target = i
 
@@ -22,7 +22,7 @@ class OST:
         token = self.api.login("doctest", 'doctest')
         data = self.api.search_subtitles([{'query':kwargs['query'],
             'sublanguageid':kwargs['sublanid']}])
-        target = self.find_max_dl_count(data, kwargs['imdbid'])
+        target = self.find_max_dl_count(data, kwargs['imdb_id'])
 
         if len(data) == 0:
             return None
