@@ -27,7 +27,9 @@ class TMDB:
         response = requests.request('GET', self.url.search, data = payload)
         response = response.json()
 
-        return response['results'][0]
+        result = sorted(response['results'], key = lambda x: x['popularity'], reverse = True)
+
+        return result[0]
 
     def get(self, **kwargs):
         # var
@@ -37,6 +39,8 @@ class TMDB:
         }
 
         response = requests.request('GET', self.url.get.format(movie_id = kwargs['movie_id']), data = payload)
+
+        print(self.url.get.format(movie_id = kwargs['movie_id']))
 
         return response.json()
 

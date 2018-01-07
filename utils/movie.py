@@ -27,9 +27,10 @@ class Movie:
         }
 
     def search(self, **kwargs):
-        return {
-            'tmdb': self.api.tmdb.search(query = kwargs['query'])
-        }
+        tmdb = self.api.tmdb.search(query = kwargs['query'])
+        imdb = self.api.tmdb.get(movie_id = tmdb['id'])
+
+        return imdb
 
     def trend(self, **kwargs):
         pass
