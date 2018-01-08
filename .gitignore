@@ -106,3 +106,5 @@ ENV/
 data/*
 !data/movie_list.txt
 srts/*
+dls/*
+zips/*
