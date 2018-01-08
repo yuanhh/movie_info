@@ -15,9 +15,6 @@ def tfidf(tf, df, docCount):
                 out_f.write(tok + '\t' + str(val) + '\n')
 
 def termFreq(tf, tokens, imdb_id):
-    if tokens is None:
-        return
-
     for tok in tokens:
         freq = tf[imdb_id].get(tok)
         if freq is None:
@@ -34,9 +31,6 @@ def docFreq(tf, df, imdb_id):
             df[tok] += 1
 
 def get_token(subs):
-    if type(subs) is not dict:
-        return None
-
     tokens = list()
     for i, sub in enumerate(subs['sentences']):
         for j, token in enumerate(sub['tokens']):
@@ -52,6 +46,9 @@ def main():
 
     imdb_list = os.listdir('{}/result/'.format(__path__))
     for imdb_f in imdb_list:
+        if not imdb_f.endswith('.imdb'):
+            continue
+
         imdb_id, ext =  os.path.splitext(imdb_f)
         tf[imdb_id] = dict()
 
@@ -59,7 +56,13 @@ def main():
             data = json.load(info_p)
     
         for i, subs in enumerate(data['parsed_sub']):
+            if type(subs) is not dict:
+                continue
+
             tokens = get_token(subs)
+            if tokens is None:
+                return
+
             termFreq(tf, tokens, imdb_id)
 
         docCount = docCount + 1

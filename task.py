@@ -26,11 +26,6 @@ def download_file(url, movieName):
         return False
 
 def unzip(movieName):
-
-    fileList = os.listdir('{}/data'.format(__path__))
-    if movieName in fileList:
-        return
-
     os.mkdir('{}/data/{}'.format(__path__, movieName))
     with ZipFile('{}/data/{}.zip'.format(__path__, movieName), 'r') as zf:
         zf.extractall('{}/data/{}'.format(__path__, movieName))
@@ -38,29 +33,31 @@ def unzip(movieName):
     os.remove('{}/data/{}.zip'.format(__path__, movieName))
 
 def main():
-
     movieList = getMovieList()
 
-    out_f = open('{}/{}'.format(__path__, 'movie_info.txt'), 'w')
+    #out_f = open('{}/{}'.format(__path__, 'movie_info.txt'), 'w')
     for mv in list(movieList):
+        if os.path.isdir('{}/data/{}'.format(__path__, mv)):
+            continue
+
         m = movie.search(query = mv)
         if m['imdb_id'] is None:
             continue
 
-        info = movie.get(imdb_id = m['imdb_id'])
+        print(mv)
+        #info = movie.get(imdb_id = m['imdb_id'])
         l = subtitle.link(query = mv, sublanid = 'zht', imdbid = m['imdb_id'])
-
-        info['douban']['title']['en'] = mv
-        info['zipUrl'] = l
-
         if l is not None:
             if download_file(l, mv):
                 unzip(mv)
 
-        str_ = json.dumps(info, indent = 4)
-        out_f.write(str_)
+        #info['douban']['title']['en'] = mv
+        #info['zipUrl'] = l
 
-    out_f.close()
+        #str_ = json.dumps(info, indent = 4)
+        #out_f.write(str_)
+
+    #out_f.close()
 
 # Step 1:
 #   Get the movie list from file(movie_list.txt)
@@ -75,6 +72,11 @@ def getMovieList():
     except (FileNotFoundError, json.decoder.JSONDecodeError):
         print("Let's download movie list.".format(movieListFileName))
         movieList = set()
+        movieList.update(movie.top(begin = 201001, end = 201013))
+        movieList.update(movie.top(begin = 201101, end = 201113))
+        movieList.update(movie.top(begin = 201201, end = 201213))
+        movieList.update(movie.top(begin = 201301, end = 201313))
+        movieList.update(movie.top(begin = 201401, end = 201413))
         movieList.update(movie.top(begin = 201501, end = 201513))
         movieList.update(movie.top(begin = 201601, end = 201613))
         movieList.update(movie.top(begin = 201701, end = 201712))

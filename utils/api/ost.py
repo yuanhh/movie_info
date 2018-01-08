@@ -27,4 +27,4 @@ class OST:
         if len(data) == 0:
             return None
 
-        return data[target]['ZipDownloadLink']
+        return data[target]['ZipDownloadLink'], data[target]['SubEncoding']
