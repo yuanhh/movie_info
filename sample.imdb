@@ -1,0 +1,8 @@
+{
+    'imdb_id': imdb_id,
+    'encode': 'SubEncoding',
+    'type': 'movie_type',
+    'title': {'ch':'sss', 'hk': 'ddd', 'en': 'aaa'},
+    'sub': [],
+    'parsed_sub': []
+}
