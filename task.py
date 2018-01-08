@@ -35,11 +35,13 @@ def unzip(movieName):
     with ZipFile('{}/data/{}.zip'.format(__path__, movieName), 'r') as zf:
         zf.extractall('{}/data/{}'.format(__path__, movieName))
 
+    os.remove('{}/data/{}.zip'.format(__path__, movieName))
+
 def main():
 
     movieList = getMovieList()
 
-    out_f = open('{}/data/{}'.format(__path__, 'movie_info.txt'), 'w')
+    out_f = open('{}/{}'.format(__path__, 'movie_info.txt'), 'w')
     for mv in list(movieList):
         m = movie.search(query = mv)
         if m['imdb_id'] is None:
@@ -51,9 +53,9 @@ def main():
         info['douban']['title']['en'] = mv
         info['zipUrl'] = l
 
-        #if l is not None:
-        #    if download_file(l, mv):
-        #        unzip(mv)
+        if l is not None:
+            if download_file(l, mv):
+                unzip(mv)
 
         str_ = json.dumps(info, indent = 4)
         out_f.write(str_)
@@ -66,7 +68,7 @@ def main():
 def getMovieList():
     movieList = []
 
-    movieListFileName = '{}/data/{}'.format(__path__, 'movie_list.txt')
+    movieListFileName = '{}/{}'.format(__path__, 'movie_list.txt')
     try:
         with open(movieListFileName, 'r') as f:
             movieList = json.load(f)
