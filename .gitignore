@@ -106,6 +106,7 @@ ENV/
 data/*
 result/*
 !data/movie_list.txt
-srts/*
-dls/*
-zips/*
+dls/*.dl
+srts/*.srt
+zips/*.zip
+tasks/*.task
