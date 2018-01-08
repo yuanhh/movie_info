@@ -3,8 +3,8 @@ import fnmatch
 import requests
 
 def main():
-    folders = os.listdir('srts')
-
+    folders = [f.name for f in os.scandir('srts') if f.is_dir()]
+    
     for folder in folders:
         files = [file for file in os.listdir('srts/%s' % folder) if fnmatch.fnmatch(file, '*.srt')]
 

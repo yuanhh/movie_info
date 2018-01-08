@@ -1,5 +1,6 @@
 import os
 import json
+import fnmatch
 import requests
 import concurrent.futures
 
@@ -7,15 +8,17 @@ def get(movie):
     print(movie)
     r = requests.request('GET', movie['link'])
     if r.status_code == 200:
-        with open('srts/%s.zip' % movie['imdb_id'], 'wb') as outfile:
+        with open('zips/%s.zip' % movie['imdb_id'], 'wb') as outfile:
             outfile.write(r.content)
+    else:
+        print(r.status_code)
 
 def main():
     srts = os.listdir('srts')
-    srts = [srt[:srt.find('.')] for srt in srts]
+    srts = [f[:f.find('.')] for f in srts if fnmatch.fnmatch(f, '*.srt')]
 
     dls = os.listdir('dls')
-    dls = [dl[:dl.find('.')] for dl in dls]
+    dls = [f[:f.find('.')] for f in dls if fnmatch.fnmatch(f, '*.dl')]
     dls = [dl for dl in dls if dl not in srts]
 
     movies = []
