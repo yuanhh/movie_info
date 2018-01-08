@@ -25,6 +25,6 @@ class OST:
         target = self.find_max_dl_count(data = data, imdb_id = kwargs['imdb_id'])
 
         if len(data) == 0:
-            return None
+            return None, None
 
         return data[target]['ZipDownloadLink'], data[target]['SubEncoding']
