@@ -11,35 +11,42 @@ __key__ = '368858ba0976e216625527ac96a9f52d'
 __path__ = os.path.dirname(os.path.abspath(__file__))
 
 def run(x):
-    x = subtitle.link(query = x['title'], imdb_id = x['imdb_id'], sublanid = 'zht')
-    print(x)
-
-    #
-    # if x['link'] != None:
-    #     with open('dls/%s.dl' % x['imdb_id'], 'w') as outfile:
-    #         json.dump(x, outfile)
+    sub = subtitle.link(query = x['title'], imdb_id = x['imdb_id'], sublanid = 'zht')
+    if sub != None:
+        print('O\t%s' % x)
+        with open('dls/%s.dl' % x['imdb_id'], 'w') as outfile:
+            json.dump({
+                'imdb_id': x['imdb_id'],
+                'link': sub['ZipDownloadLink'],
+                'encoding': sub['SubEncoding']
+            }, outfile)
+    else:
+        print('X\t%s' % x)
+        os.remove('tasks/%s.task' % x['imdb_id'])
 
 def main():
-    with open('imdb.json', 'r') as infile:
-        movies = json.load(infile)
+    # var
+    tasks = []
+    files = [f[:f.find('.')] for f in os.listdir('tasks') if fnmatch.fnmatch(f, '*.task')]
+    dls = [f[:f.find('.')] for f in os.listdir('dls') if fnmatch.fnmatch(f, '*.dl')]
 
-    dls = os.listdir('dls')
-    dls = [dl[:dl.find('.')] for dl in dls]
+    files = sorted([f for f in files if f not in dls])
 
-    movies = [x for x in movies if x['imdb_id'] not in dls]
+    print(len(files))
 
-    for x in movies:
-        run(x)
+    for file in files:
+        with open('tasks/%s.task' % file, 'r') as infile:
+            tasks.append(json.load(infile))
 
-    # print(len(movies))
-    #
-    # with concurrent.futures.ThreadPoolExecutor(max_workers = 2) as executor:
-    #     futures = executor.map(run, movies[:1000], )
-    #
-    # movies = movies[1000:]
-    #
-    # with open('imdb.json', 'w') as outfile:
-    #     json.dump(movies, outfile)
+    # for task in tasks:
+    #     with open('tasks/%s.task' % task, 'r') as infile:
+    #         x = json.load(infile)
+    #     run(x)
+    #     break
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers = 3) as executor:
+        futures = executor.map(run, tasks, )
+
 
 if __name__ == '__main__':
     main()

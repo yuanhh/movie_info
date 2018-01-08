@@ -8,7 +8,10 @@ def main():
 
     for zip in zips:
         if zip not in srts:
-            os.mkdir('srts/%s' % zip)
+            try:
+                os.mkdir('srts/%s' % zip)
+            except:
+                pass
 
         command = 'unzip -q -o zips/%s -d srts/%s' % (zip + '.zip', zip)
         print(command)
