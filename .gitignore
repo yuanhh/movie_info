@@ -104,7 +104,7 @@ ENV/
 
 # data
 data/*
-result/*
+subtitles/*
 !data/movie_list.txt
 srts/*
 dls/*
