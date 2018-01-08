@@ -6,6 +6,7 @@ from pythonopensubtitles.opensubtitles import OpenSubtitles
 class OST:
     def __init__(self):
         self.api = OpenSubtitles()
+        self.api.login("doctest", 'doctest')
 
     def find_max_dl_count(self, **kwargs):
         target = 0
@@ -19,7 +20,6 @@ class OST:
         return target
 
     def link(self, **kwargs):
-        token = self.api.login("doctest", 'doctest')
         data = self.api.search_subtitles([{'query':kwargs['query'],
             'sublanguageid':kwargs['sublanid']}])
         target = self.find_max_dl_count(data = data, imdb_id = kwargs['imdb_id'])

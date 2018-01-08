@@ -27,12 +27,14 @@ class TMDB:
         response = requests.request('GET', self.url.search, data = payload)
         response = response.json()
 
+        if len(response['results']) == 0:
+            return None
+
         result = sorted(response['results'], key = lambda x: x['popularity'], reverse = True)
 
         return result[0]
 
     def get(self, **kwargs):
-        # var
         payload = {
             'api_key': __key__,
             'language': 'en-US'
